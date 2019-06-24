@@ -1,0 +1,27 @@
+dpath = "C:/Users/admin/Documents/"
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+plt.style.use('seaborn-colorblind')
+
+dataB = pd.read_csv(dpath+"death.csv", sep=',',    skiprows=[1],  engine='python')
+df_grp=dataB['Deaths'].groupby([dataB['Year'],dataB['Cause Name']]).sum()
+heart=dataB[dataB['Cause Name']=='Heart disease'].groupby([dataB['Year']]).sum()['Deaths'].rename("Heart disease")
+tot=dataB[dataB['Cause Name']=='All causes'].groupby([dataB['Year']]).sum()['Deaths'].rename("All causes")
+df=pd.concat([heart, tot], axis=1).reset_index()
+df['Year'] = df['Year'].astype(str)
+
+x = df['Year'].tolist()
+y1 = df['Heart disease'].tolist()
+y2 = df['All causes'].tolist()
+
+
+plt.plot(x, y1, '-s', label = "Heart disease (Deaths")
+plt.plot(x, y2, '-*', label = "All causes (Deaths)")
+
+plt.title('Deaths comparisson - Heart disease Vs  All causes in United States(1999-2016)')
+ 
+plt.legend(frameon=False)
+[plt.gca().spines[loc].set_visible(False) for loc in ['top', 'right']]
+plt.xticks(rotation=90)
+plt.show()
